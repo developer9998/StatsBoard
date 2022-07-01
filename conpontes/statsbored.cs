@@ -104,6 +104,9 @@ namespace stats.conpontes
         }
         void Onroundend(object sender, EventArgs e)
         {
+         if(Plugin.inRoom == false)
+           {
+        
             print("round end");
             if (istagedd == false)
             {
@@ -112,6 +115,7 @@ namespace stats.conpontes
                 matches.text = $"HUNT MATCHES WON: {roundswon}";
             }
             istagedd = false;
+           }
         }
 
         void Onnamechanged(object sender, PlayerNicknameArgs args)
