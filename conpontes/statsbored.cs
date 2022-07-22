@@ -4,14 +4,22 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
+using stats;
+using Photon.Pun;
 namespace stats.conpontes
 {
+   
     public class statsbored : MonoBehaviour
     {
+        public bool loaded;
+
         Text name;
+        Text CerrntTime;
+        Text date;
         Text timeplayedLifetieme;
         Text Timeplayedsessoin;
         Text RGBcoler;
+        Text GtagRGBcolor;
         Text tags;
         Text tagged;
         Text matches;
@@ -24,6 +32,8 @@ namespace stats.conpontes
         public double time_;
         public double Timelifetime;
         public static statsbored Instins = new statsbored();
+
+      
         // Use this for initialization
         void Awake()
         {
@@ -45,6 +55,7 @@ namespace stats.conpontes
             }
             name = gameObject.transform.Find("stat/Name").gameObject.GetComponent<Text>();
             RGBcoler = gameObject.transform.Find("stat/RGB").gameObject.GetComponent<Text>();
+            GtagRGBcolor = gameObject.transform.Find("stat/RGBgtag").gameObject.GetComponent<Text>();
             tags = gameObject.transform.Find("stat/tags").gameObject.GetComponent<Text>();
             tagged = gameObject.transform.Find("stat/taged").gameObject.GetComponent<Text>();
             matches = gameObject.transform.Find("stat/matches").gameObject.GetComponent<Text>();
@@ -53,6 +64,8 @@ namespace stats.conpontes
             pfp.sprite = LoadPNG(path);
             Timeplayedsessoin = gameObject.transform.Find("stat/Time played S").gameObject.GetComponent<Text>();
             timeplayedLifetieme = gameObject.transform.Find("stat/Time played T").gameObject.GetComponent<Text>();
+            CerrntTime = gameObject.transform.Find("stat/Time").gameObject.GetComponent<Text>();
+            date = gameObject.transform.Find("stat/date").gameObject.GetComponent<Text>();
             base.gameObject.transform.position = new Vector3(-62.8345f, 12.334f, -83.214f);
             base.gameObject.transform.rotation = Quaternion.Euler(0.1f, 180f, 0.1f);
             base.gameObject.transform.localScale = new Vector3(0.0224f, 0.0248f, 0.0269f);
@@ -66,10 +79,12 @@ namespace stats.conpontes
             
             
             RGBcoler.text = $"R: {PlayerPrefs.GetFloat("redValue")/ 1.0f * 255.0f} G: {PlayerPrefs.GetFloat("greenValue") / 1.0f * 255.0f} G: {PlayerPrefs.GetFloat("blueValue") / 1.0f * 255.0f}";
+            GtagRGBcolor.text = $"R: {PlayerPrefs.GetFloat("redValue") / 1.0f * 9.0f} G: {PlayerPrefs.GetFloat("greenValue") / 1.0f * 9.0f} G: {PlayerPrefs.GetFloat("blueValue") / 1.0f * 9.0f}";
             colorimg.color = new Color32(R_, G_, B_, 255);
             tagged.text = $"TAGGED: {Tagged}";
             tags.text = $"TAGS: {Tags}";
             matches.text = $"HUNT MATCHES WON: {roundswon}";
+            loaded = true;
             InvokeRepeating("adtosave", 0, 10);
         }
         void Update()
@@ -80,6 +95,14 @@ namespace stats.conpontes
             Timelifetime += (double)Time.deltaTime;
             TimeSpan _timeSpan = TimeSpan.FromSeconds(Timelifetime);
             timeplayedLifetieme.text = $"TIME PLAYED (LIFETIME): {_timeSpan.Hours}:{_timeSpan.Minutes}:{_timeSpan.Seconds}";
+            string cerrnttime = DateTime.Now.ToString("h:mm tt");
+            string Date = DateTime.Now.ToString("D").ToUpper();
+            CerrntTime.text = cerrnttime;
+            date.text = Date;
+       
+
+            
+
         }
         void Playertagged(object sender, PlayerTaggedPlayerArgs player)
         {
@@ -104,18 +127,20 @@ namespace stats.conpontes
         }
         void Onroundend(object sender, EventArgs e)
         {
-         if(Plugin.inRoom == false)
-           {
-        
-            print("round end");
-            if (istagedd == false)
+            if(!Plugin.inRoom)
             {
-                print("You won");
-                roundswon++;
-                matches.text = $"HUNT MATCHES WON: {roundswon}";
+                print("round end");
+                if (istagedd == false)
+                {
+                        print("You won");
+                        roundswon++;
+                        matches.text = $"HUNT MATCHES WON: {roundswon}";
+                    
+                   
+                }
+                istagedd = false;
             }
-            istagedd = false;
-           }
+           
         }
 
         void Onnamechanged(object sender, PlayerNicknameArgs args)
@@ -177,5 +202,6 @@ namespace stats.conpontes
             return sprite;
         }
         public static string fileLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        
     }
 }
