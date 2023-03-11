@@ -75,6 +75,12 @@ namespace stats.Components
 
             // UI changes
             pfp.sprite = LoadPNG(path);
+            pfp.GetComponent<RectTransform>().sizeDelta = new Vector2(180f, 200f);
+            pfp.transform.localPosition = new Vector3(73.65f, 10.5545f, 0f);
+            colorimg.GetComponent<RectTransform>().sizeDelta = new Vector2(100f, 108f);
+            colorimg.transform.localPosition = new Vector3(22.6364f, 8.46f, 0);
+            CerrntTime.transform.localPosition = new Vector3(118.6286f, -44.532f, 0f);
+            date.transform.localPosition = new Vector3(61.1304f, -57.2827f, 0.0105f);
             NameTex.text = string.Concat("NAME: ", PhotonNetwork.LocalPlayer.NickName);
 
             // Colour logic
@@ -83,9 +89,10 @@ namespace stats.Components
             float B = PlayerPrefs.GetFloat("blueValue");
 
             // Move object
-            gameObject.transform.position = new Vector3(-62.8345f, 12.334f, -83.214f);
-            gameObject.transform.rotation = Quaternion.Euler(0.1f, 180f, 0.1f);
-            gameObject.transform.localScale = new Vector3(0.0224f, 0.0248f, 0.0269f);
+            transform.position = new Vector3(-62.8345f, 12.334f, -83.214f);
+            transform.rotation = Quaternion.Euler(0.1f, 180f, 0.1f);
+            transform.localScale = new Vector3(0.0224f, 0.0248f, 0.0269f);
+            transform.SetParent(GameObject.Find("lower level")?.transform, true);
 
             // Finishing UI
             RGBcoler.text = $"R: {R * 255.0f} G: {G * 255.0f} G: {B * 255.0f}";
@@ -95,8 +102,7 @@ namespace stats.Components
 
             var lvlScreen = FindObjectOfType(typeof(GorillaLevelScreen)) as GorillaLevelScreen;
             Material localMaterial = new Material(Shader.Find("Legacy Shaders/Diffuse"));
-            localMaterial.mainTexture = lvlScreen.goodMaterial.mainTexture;
-            localMaterial.SetColor("_Color", Color.green);
+            localMaterial.SetColor("_Color", new Color(0, 64f / 255f, 0));
             gameObject.transform.Find("mesh/Plane").GetComponent<Renderer>().material = localMaterial;
 
             tagged.text = $"TAGGED: {Tagged}";
